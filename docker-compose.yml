@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  microserviceis2024:
+    image: ${DOCKER_REGISTRY-}microserviceis2024
+    build:
+      context: .
+      dockerfile: Apps/Microserviceis2024/Dockerfile
+
+  settingsservice:
+    image: ${DOCKER_REGISTRY-}settingsservice
+    build:
+      context: .
+      dockerfile: Apps/SettingsService/Dockerfile
+
+  userservice:
+    image: ${DOCKER_REGISTRY-}userservice
+    build:
+      context: .
+      dockerfile: Apps/UserService/Dockerfile
+
+  signalrservice:
+    image: ${DOCKER_REGISTRY-}userservice
+    build:
+      context: .
+      dockerfile: Apps/SignalRService/Dockerfile
