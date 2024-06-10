@@ -1,17 +1,13 @@
 ﻿using MassTransit;
+using MessageContracts;
 
 namespace UserService.Handlers;
 
-public class YourMessageConsumer : IConsumer<IMessage>
+public class UserMessageConsumer : IConsumer<IMiddlewareMessage2>
 {
-    public async Task Consume(ConsumeContext<IMessage> context)
+    public async Task Consume(ConsumeContext<IMiddlewareMessage2> context)
     {
-        Console.WriteLine($"Received: {context.Message.Value}");
-        //TODO: Output to file
+        string path = $"/testfiles/{Guid.NewGuid().ToString()}-{context.Message.XTenant}-{DateTime.UtcNow.Date:h:mm:ss}.json";
+        await File.WriteAllTextAsync(path, context.Message.Value);
     }
-}
-
-public interface IMessage
-{
-    public string Value { get; set; }
 }

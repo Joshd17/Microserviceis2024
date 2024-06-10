@@ -1,4 +1,7 @@
 
+using MassTransit;
+using SignalRService.Extensions;
+
 namespace SignalRService;
 
 public class Program
@@ -9,11 +12,11 @@ public class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
+        builder.Services.AddSignalR();
+        builder.Services.ConfigureMassTransit();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -25,10 +28,8 @@ public class Program
 
         app.UseHttpsRedirection();
 
-        app.UseAuthorization();
-
-
-        app.MapControllers();
+        //app.MapControllers();
+        app.MapHub<MessageHub>("/messagehub");
 
         app.Run();
     }

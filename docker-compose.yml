@@ -18,9 +18,12 @@ services:
     build:
       context: .
       dockerfile: Apps/UserService/Dockerfile
+    working_dir: /app
 
   signalrservice:
-    image: ${DOCKER_REGISTRY-}userservice
+    image: ${DOCKER_REGISTRY-}signalrservice
     build:
       context: .
       dockerfile: Apps/SignalRService/Dockerfile
+    ports:
+    - "443:443"

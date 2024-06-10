@@ -1,8 +1,7 @@
 ﻿using MassTransit;
-using SettingsService.Handlers;
+using SignalRService.Handlers;
 
-namespace SettingsService.Extensions;
-
+namespace SignalRService.Extensions;
 
 public static class MessagingExtensions
 {
@@ -10,6 +9,7 @@ public static class MessagingExtensions
     {
         services.AddMassTransit(x =>
         {
+            x.AddConsumer<SignalMessageConsumer>();
             x.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host("host.docker.internal", "/", h =>
@@ -17,12 +17,13 @@ public static class MessagingExtensions
                     h.Username("guest");
                     h.Password("guest");
                 });
-                cfg.ReceiveEndpoint("settings_queue", e =>
+                cfg.ReceiveEndpoint("signalr_queue", e =>
                 {
-                    e.Consumer<SettingsMessageConsumer>();
+                    e.Consumer<SignalMessageConsumer>(context);
                 });
             });
         });
+
         return services;
     }
 }

@@ -1,42 +1,39 @@
 ﻿using MassTransit;
+using MessageContracts;
 
 namespace Microserviceis2024.Middleware;
 
 public class HeaderMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IPublishEndpoint _publishEndpoint;
-
-    public HeaderMiddleware(RequestDelegate next, IPublishEndpoint publishEndpoint)
+    private readonly IServiceProvider _serviceProvider;
+    
+    public HeaderMiddleware(RequestDelegate next, IServiceProvider serviceProvider)
     {
         _next = next;
-        _publishEndpoint = publishEndpoint;
+        _serviceProvider = serviceProvider;
     }
+    
     public async Task InvokeAsync(HttpContext context)
     {
-        
-
-
-        if (context.Request.Method == HttpMethods.Post)
+        using (var scope = _serviceProvider.CreateScope())
         {
+            var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
             var xHeader = context.Request.Headers.FirstOrDefault(x => x.Key == "X-Tenant");
-            var asyncHeader = context.Request.Headers.FirstOrDefault(x => x.Key == "X-Async");
-            
-            
-        }
-        await _publishEndpoint.Publish<IYourMessage>(new { Text = "Hello, world!" });
 
+            if (context.Request.Method == HttpMethods.Post)
+            {
+                var asyncHeader = context.Request.Headers.Any(x => x.Key == "X-Async");
 
-        foreach (var header in context.Request.Headers)
-        {
-            Console.WriteLine($"{header.Key}: {header.Value}");
+                if (asyncHeader)
+                {
+                    await publishEndpoint.Publish<IMiddlewareMessage2>(new { Text = "A middleware message", XTenant = xHeader });
+                    return;
+                }
+            }
+
         }
-        
+
         await _next(context);
     }
-}
-
-public interface IYourMessage
-{
-    string Text { get; }
 }

@@ -11,14 +11,14 @@ public static class MessagingExtensions
         {
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host("localhost", "/", h =>
+                cfg.Host("host.docker.internal", "/", h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
                 });
-                cfg.ReceiveEndpoint("your_queue", e =>
+                cfg.ReceiveEndpoint("user_queue", e =>
                 {
-                    e.Consumer<YourMessageConsumer>(context);
+                    e.Consumer<UserMessageConsumer>();
                 });
             });
         });

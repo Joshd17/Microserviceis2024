@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Hosting;
 using UserService.Extensions;
 
 namespace UserService;
@@ -16,7 +17,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.ConfigureMassTransit();
-        
+        builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -29,8 +30,6 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
-
         app.MapControllers();
 
         app.Run();

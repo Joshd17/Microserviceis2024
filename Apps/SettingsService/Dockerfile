@@ -1,7 +1,12 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+
+USER root
+RUN mkdir /testfiles/
+RUN chmod -R 777 /testfiles/
 USER app
+
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
